@@ -15,7 +15,8 @@ def get_data(target_pattern):
         params={
             'target': target_pattern,
             'format': 'json',
-            'from': graphite_from
+            'from'  : '-15min',
+            'until' : '-5min'
         }
     )
     resp.raise_for_status()

@@ -5,8 +5,6 @@ from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.template import Context, Template
 
-from twilio.rest import TwilioRestClient
-from twilio import twiml
 import requests
 import logging
 
@@ -111,29 +109,29 @@ def _send_hipchat_alert(message, color='green', sender='Cabot'):
 
 
 def send_sms_alert(service, users, duty_officers):
-    client = TwilioRestClient(
-        settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+
     mobiles = [u.profile.prefixed_mobile_number for u in users if hasattr(
         u, 'profile') and u.profile.mobile_number]
     if service.is_critical:
         mobiles += [u.profile.prefixed_mobile_number for u in duty_officers if hasattr(
             u, 'profile') and u.profile.mobile_number]
+
+    if not mobiles:
+        return
+
     c = Context({
         'service': service,
         'host': settings.WWW_HTTP_HOST,
         'scheme': settings.WWW_SCHEME,
     })
     message = Template(sms_template).render(c)
-    mobiles = list(set(mobiles))
-    for mobile in mobiles:
-        try:
-            client.sms.messages.create(
-                to=mobile,
-                from_=settings.TWILIO_OUTGOING_NUMBER,
-                body=message,
-            )
-        except Exception, e:
-            logger.exception('Error sending twilio sms: %s' % e)
+
+    send_mail(
+        subject="",
+        message=message,
+        from_email='Cabot <%s>' % settings.CABOT_FROM_EMAIL,
+        recipient_list=emails,
+    )
 
 
 def send_telephone_alert(service, users, duty_officers):

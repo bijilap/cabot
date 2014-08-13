@@ -775,7 +775,7 @@ class StatusCheckResult(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, related_name='profile')
-    mobile_number = models.CharField(max_length=20, blank=True, default='')
+    mobile_number = models.CharField(max_length=60, blank=True, default='')
     hipchat_alias = models.CharField(max_length=50, blank=True, default='')
     fallback_alert_user = models.BooleanField(default=False)
 
