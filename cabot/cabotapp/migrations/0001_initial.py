@@ -150,7 +150,7 @@ class Migration(SchemaMigration):
             ('user', self.gf('django.db.models.fields.related.OneToOneField')
              (related_name='profile', unique=True, to=orm['auth.User'])),
             ('mobile_number', self.gf('django.db.models.fields.CharField')
-             (default='', max_length=20, blank=True)),
+             (default='', max_length=60, blank=True)),
             ('hipchat_alias', self.gf('django.db.models.fields.CharField')
              (default='', max_length=50, blank=True)),
             ('fallback_alert_user',
@@ -304,7 +304,7 @@ class Migration(SchemaMigration):
             'fallback_alert_user': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'hipchat_alias': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '50', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'mobile_number': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '20', 'blank': 'True'}),
+            'mobile_number': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '60', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'profile'", 'unique': 'True', 'to': "orm['auth.User']"})
         },
         'contenttypes.contenttype': {

@@ -8,6 +8,9 @@ from django.template import Context, Template
 import requests
 import logging
 
+import smtplib
+from email.mime.text import MIMEText
+
 logger = logging.getLogger(__name__)
 
 email_template = """Service {{ service.name }} {{ scheme }}://{{ host }}{% url 'service' pk=service.id %} {% if service.overall_status != service.PASSING_STATUS %}alerting with status: {{ service.overall_status }}{% else %}is back to normal{% endif %}.
@@ -126,12 +129,18 @@ def send_sms_alert(service, users, duty_officers):
     })
     message = Template(sms_template).render(c)
 
-    send_mail(
-        subject="",
-        message=message,
-        from_email='Cabot <%s>' % settings.CABOT_FROM_EMAIL,
-        recipient_list=emails,
-    )
+    msg = MIMEText(message)
+    msg['To'] = ','.join(mobiles)
+    msg['From'] = 'noreply@paypal.com'
+    msg['Subject'] = 'Siren Alerts'
+    s = smtplib.SMTP(settings.EMAIL_HOST)
+    s.sendmail(msg['From'], mobiles, msg.as_string())
+    #send_mail(
+    #    subject="",
+    #    message=message,
+    #    from_email='Cabot <%s>' % settings.CABOT_FROM_EMAIL,
+    #   recipient_list=mobiles,
+    #)
 
 
 def send_telephone_alert(service, users, duty_officers):
