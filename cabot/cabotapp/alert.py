@@ -119,6 +119,9 @@ def send_sms_alert(service, users, duty_officers):
         mobiles += [u.profile.prefixed_mobile_number for u in duty_officers if hasattr(
             u, 'profile') and u.profile.mobile_number]
 
+    tmp_mbl = [ mob.lstrip('+') for mob in mobiles ]
+    mobiles = tmp_mbl
+
     if not mobiles:
         return
 
@@ -131,7 +134,7 @@ def send_sms_alert(service, users, duty_officers):
 
     msg = MIMEText(message)
     msg['To'] = ','.join(mobiles)
-    msg['From'] = 'noreply@paypal.com'
+    msg['From'] = settings.CABOT_FROM_EMAIL
     msg['Subject'] = 'Siren Alerts'
     s = smtplib.SMTP(settings.EMAIL_HOST)
     s.sendmail(msg['From'], mobiles, msg.as_string())
